@@ -3,7 +3,13 @@ import { useNavigate, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 
 const Register = () => {
@@ -17,7 +23,7 @@ const Register = () => {
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (password !== confirmPassword) {
       toast({
         title: "Erro",
@@ -36,17 +42,44 @@ const Register = () => {
       return;
     }
 
-    setIsLoading(true);
-    
-    // Simula processo de cadastro
-    setTimeout(() => {
-      setIsLoading(false);
-      toast({
-        title: "Sucesso!",
-        description: "Conta criada com sucesso",
+    try {
+      const response = await fetch("http://localhost:3000/api/users", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: name,
+          password: password,
+          role: "user", // or allow user to choose if needed
+        }),
       });
-      navigate("/dashboard");
-    }, 1500);
+
+      const data = await response.json();
+
+      if (response.ok) {
+        toast({
+          title: "Sucesso!",
+          description: "Conta criada com sucesso",
+        });
+        navigate("/dashboard");
+      } else {
+        toast({
+          title: "Erro",
+          description: data.error || "Erro ao criar conta",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.error(error);
+      toast({
+        title: "Erro",
+        description: "Erro de conexão com o servidor",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -106,20 +139,13 @@ const Register = () => {
                 required
               />
             </div>
-            <Button 
-              type="submit" 
-              className="w-full" 
-              disabled={isLoading}
-            >
+            <Button type="submit" className="w-full" disabled={isLoading}>
               {isLoading ? "Criando conta..." : "Criar conta"}
             </Button>
           </form>
           <div className="mt-4 text-center text-sm">
             <span className="text-muted-foreground">Já tem uma conta? </span>
-            <Link 
-              to="/" 
-              className="text-primary hover:underline font-medium"
-            >
+            <Link to="/" className="text-primary hover:underline font-medium">
               Fazer login
             </Link>
           </div>

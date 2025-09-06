@@ -13,56 +13,7 @@ import movie5 from "@/assets/movie5.jpg";
 import movie6 from "@/assets/movie6.jpg";
 
 const movies = [
-  {
-    id: 1,
-    title: "Ação Explosiva",
-    genre: "Ação",
-    rating: 8.5,
-    image: movie1,
-    featured: true,
-    trailerUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-  },
-  {
-    id: 2,
-    title: "Romance Eterno",
-    genre: "Romance",
-    rating: 7.8,
-    image: movie2,
-    featured: false,
-  },
-  {
-    id: 3,
-    title: "Futuro Cyberpunk",
-    genre: "Ficção Científica",
-    rating: 9.1,
-    image: movie3,
-    featured: true,
-    trailerUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-  },
-  {
-    id: 4,
-    title: "Terror Noturno",
-    genre: "Terror",
-    rating: 7.3,
-    image: movie4,
-    featured: false,
-  },
-  {
-    id: 5,
-    title: "Comédia Hilária",
-    genre: "Comédia",
-    rating: 8.0,
-    image: movie5,
-    featured: false,
-  },
-  {
-    id: 6,
-    title: "Aventura Mágica",
-    genre: "Fantasia",
-    rating: 8.7,
-    image: movie6,
-    featured: true,
-  },
+  
 ];
 
 const Dashboard = () => {
