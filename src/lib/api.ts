@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from "axios";
 
 export interface Movie {
   id?: number;
@@ -13,25 +13,26 @@ export interface Movie {
 }
 
 const api = axios.create({
-  baseURL: 'http://localhost:3000/api',
+  baseURL: "http://localhost:3000/api",
   headers: {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   },
 });
 
 export const movieApi = {
   // Get all movies
-  getMovies: () => api.get<Movie[]>('/movies'),
-  
+  getMovies: () => api.get<Movie[]>("/movies"),
+
   // Get movie by ID
   getMovie: (id: number) => api.get<Movie>(`/movies/${id}`),
-  
+
   // Create new movie
-  createMovie: (movie: Omit<Movie, 'id'>) => api.post<Movie>('/movies', movie),
-  
+  createMovie: (movie: Omit<Movie, "id">) => api.post<Movie>("/movies", movie),
+
   // Update movie
-  updateMovie: (id: number, movie: Partial<Movie>) => api.put<Movie>(`/movies/${id}`, movie),
-  
+  updateMovie: (id: number, movie: Partial<Movie>) =>
+    api.put<Movie>(`/movies/${id}`, movie),
+
   // Delete movie
   deleteMovie: (id: number) => api.delete(`/movies/${id}`),
 };

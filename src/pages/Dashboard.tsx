@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
@@ -11,25 +11,40 @@ import movie3 from "@/assets/movie3.jpg";
 import movie4 from "@/assets/movie4.jpg";
 import movie5 from "@/assets/movie5.jpg";
 import movie6 from "@/assets/movie6.jpg";
+import api from "@/lib/api";
 
-const movies = [
-  
-];
+const movies = [];
 
 const Dashboard = () => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedTrailer, setSelectedTrailer] = useState<{ url: string; title: string } | null>(null);
+  const [movies, setMovies] = useState([])
+  const [selectedTrailer, setSelectedTrailer] = useState<{
+    url: string;
+    title: string;
+  } | null>(null);
   const navigate = useNavigate();
-  
-  const featuredMovies = movies.filter(movie => movie.featured);
-  const filteredMovies = movies.filter(movie =>
-    movie.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    movie.genre.toLowerCase().includes(searchTerm.toLowerCase())
+
+  const featuredMovies = movies.filter((movie) => movie.featured);
+  const filteredMovies = movies.filter(
+    (movie) =>
+      movie.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      movie.genre.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const handleLogout = () => {
     navigate("/");
   };
+
+  async function getAllMovies() {
+    const movies = await api.get("/movies");
+
+    setMovies(movies.data);
+    console.log(movies.data);
+  }
+
+  useEffect(() => {
+    getAllMovies();
+  }, []);
 
   return (
     <div className="min-h-screen bg-background">
@@ -37,7 +52,7 @@ const Dashboard = () => {
       <header className="bg-card/80 backdrop-blur-sm border-b border-border sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <h1 className="text-2xl font-bold text-primary">Digitalflix</h1>
-          
+
           <div className="flex items-center gap-4">
             <div className="relative max-w-md">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -48,15 +63,15 @@ const Dashboard = () => {
                 className="pl-10 bg-input border-border"
               />
             </div>
-            
+
             <Button variant="ghost" size="icon">
               <User className="h-5 w-5" />
             </Button>
-            
+
             <Button variant="outline" onClick={() => navigate("/admin")}>
               Admin
             </Button>
-            
+
             <Button variant="ghost" size="icon" onClick={handleLogout}>
               <LogOut className="h-5 w-5" />
             </Button>
@@ -76,8 +91,12 @@ const Dashboard = () => {
                 className="w-full h-96 object-cover"
               />
               <div className="absolute bottom-0 left-0 p-8 z-20">
-                <h2 className="text-4xl font-bold mb-2">{featuredMovies[0]?.title}</h2>
-                <p className="text-lg text-muted-foreground mb-4">{featuredMovies[0]?.genre}</p>
+                <h2 className="text-4xl font-bold mb-2">
+                  {featuredMovies[0]?.title}
+                </h2>
+                <p className="text-lg text-muted-foreground mb-4">
+                  {featuredMovies[0]?.genre}
+                </p>
                 <div className="flex gap-4">
                   <Button variant="netflix" size="lg">
                     <Play className="mr-2 h-5 w-5" />
@@ -95,16 +114,18 @@ const Dashboard = () => {
         {/* Movies Grid */}
         <section>
           <h3 className="text-2xl font-bold mb-6">
-            {searchTerm ? `Resultados para "${searchTerm}"` : "Catálogo de Filmes"}
+            {searchTerm
+              ? `Resultados para "${searchTerm}"`
+              : "Catálogo de Filmes"}
           </h3>
-          
+
           {filteredMovies.length === 0 ? (
             <div className="text-center py-12">
               <p className="text-xl text-muted-foreground mb-4">
                 Nenhum filme encontrado para "{searchTerm}"
               </p>
-              <Button 
-                variant="netflix-outline" 
+              <Button
+                variant="netflix-outline"
                 onClick={() => navigate("/not-found")}
               >
                 Ver página de conteúdo não encontrado
@@ -130,13 +151,16 @@ const Dashboard = () => {
                         Assistir
                       </Button>
                       {movie.trailerUrl && (
-                        <Button 
-                          variant="netflix-outline" 
-                          size="sm" 
+                        <Button
+                          variant="netflix-outline"
+                          size="sm"
                           className="flex-1"
                           onClick={(e) => {
                             e.stopPropagation();
-                            setSelectedTrailer({ url: movie.trailerUrl!, title: movie.title });
+                            setSelectedTrailer({
+                              url: movie.trailerUrl!,
+                              title: movie.title,
+                            });
                           }}
                         >
                           <PlayCircle className="mr-2 h-4 w-4" />
@@ -146,11 +170,19 @@ const Dashboard = () => {
                     </div>
                   </div>
                   <CardContent className="p-4">
-                    <h4 className="font-semibold text-lg mb-1">{movie.title}</h4>
-                    <p className="text-muted-foreground text-sm mb-2">{movie.genre}</p>
+                    <h4 className="font-semibold text-lg mb-1">
+                      {movie.title}
+                    </h4>
+                    <p className="text-muted-foreground text-sm mb-2">
+                      {movie.genre}
+                    </p>
                     <div className="flex items-center justify-between">
-                      <span className="text-primary font-medium">★ {movie.rating}</span>
-                      <span className="text-xs text-muted-foreground">2024</span>
+                      <span className="text-primary font-medium">
+                        ★ {movie.rating}
+                      </span>
+                      <span className="text-xs text-muted-foreground">
+                        2024
+                      </span>
                     </div>
                   </CardContent>
                 </Card>
